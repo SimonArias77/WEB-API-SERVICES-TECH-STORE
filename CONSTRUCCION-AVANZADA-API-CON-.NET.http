@@ -1,0 +1,6 @@
+@CONSTRUCCION_AVANZADA_API_CON_.NET_HostAddress = http://localhost:5116
+
+GET {{CONSTRUCCION_AVANZADA_API_CON_.NET_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
