@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CONSTRUCCION_AVANZADA_API_CON_.NET.Models;
 
-public class ProductCategories
+public class Categorie 
 {
    public int Id { get; set; }
    public string? Name { get; set; }
