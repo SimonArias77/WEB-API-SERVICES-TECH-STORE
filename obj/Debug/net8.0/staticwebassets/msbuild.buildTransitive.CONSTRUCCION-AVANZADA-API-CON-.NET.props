@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="../buildMultiTargeting/CONSTRUCCION-AVANZADA-API-CON-.NET.props" />
+  <Import Project="..\buildMultiTargeting\CONSTRUCCION-AVANZADA-API-CON-.NET.props" />
 </Project>

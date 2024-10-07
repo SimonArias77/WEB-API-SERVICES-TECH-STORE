@@ -1,4 +1,6 @@
 using CONSTRUCCION_AVANZADA_API_CON_.NET.Data;
+using CONSTRUCCION_AVANZADA_API_CON_.NET.Repositories;
+using CONSTRUCCION_AVANZADA_API_CON_.NET.Services;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +29,10 @@ var mySqlConnection = $"server={dbHost};port={dbPort};database={dbDatabaseName};
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(mySqlConnection, ServerVersion.Parse("8.0.20-mysql")));
 
+    builder.Services.AddScoped<ICategoryRepository, CategoryServices>();
+
+
+
 // Get the necessary environment variables to configure JWT authentication.
 // These variables should contain the security key, issuer, audience, and token expiration time.
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
@@ -36,28 +42,28 @@ var jwtExpireMinutes = Environment.GetEnvironmentVariable("JWT_EXPIREMINUTES");
 
 // Configure JWT authentication in the project's services.
 // It is specified that the JWT authentication scheme will be used to authenticate and challenge requests.
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-// Specific JWT configuration, which includes validations such as issuer, audience, 
-// token lifetime, and the security key used to sign the tokens.
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;  // HTTPS is not required for the token (optional).
-    options.SaveToken = true;  // Saves the authentication token.
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,  // Validates that the token issuer is correct.
-        ValidateAudience = true,  // Validates that the token audience is correct.
-        ValidateLifetime = true,  // Validates that the token is not expired.
-        ValidateIssuerSigningKey = true,  // Validates that the signing key used to sign the token is valid.
-        ValidIssuer = jwtIssuer,   // Defines the valid issuer.
-        ValidAudience = jwtAudience,  // Defines the valid audience.
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))  // Defines the token signing key.
-    };
-});
+// builder.Services.AddAuthentication(options =>
+// {
+//     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+// })
+// // Specific JWT configuration, which includes validations such as issuer, audience, 
+// // token lifetime, and the security key used to sign the tokens.
+// .AddJwtBearer(options =>
+// {
+//     options.RequireHttpsMetadata = false;  // HTTPS is not required for the token (optional).
+//     options.SaveToken = true;  // Saves the authentication token.
+//     options.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateIssuer = true,  // Validates that the token issuer is correct.
+//         ValidateAudience = true,  // Validates that the token audience is correct.
+//         ValidateLifetime = true,  // Validates that the token is not expired.
+//         ValidateIssuerSigningKey = true,  // Validates that the signing key used to sign the token is valid.
+//         ValidIssuer = jwtIssuer,   // Defines the valid issuer.
+//         ValidAudience = jwtAudience,  // Defines the valid audience.
+//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))  // Defines the token signing key.
+//     };
+// });
 
 // We add the authorization service, which will be used to restrict access to certain endpoints.
 builder.Services.AddAuthorization();
@@ -100,6 +106,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseWelcomePage(new WelcomePageOptions
+{
+    Path = "/"
+});
 
 app.MapControllers();
 
